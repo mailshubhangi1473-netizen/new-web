@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 320px;
+            text-align: center;
+        }
+
+        h2 {
+            font-weight: bold;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #4facfe;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #00c6ff;
+            transform: scale(1.05);
+        }
+
+        #result {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #status {
+            margin-top: 10px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Smart Calculator</h2>
+
+    <label>Enter First Number:</label>
+    <input type="number" id="num1">
+
+    <label>Enter Second Number:</label>
+    <input type="number" id="num2">
+
+    <div class="btn-group">
+        <button onmouseover="calculate('add')">Add</button>
+        <button onmouseover="calculate('sub')">Subtract</button>
+        <button onmouseover="calculate('mul')">Multiply</button>
+        <button onmouseover="calculate('div')">Divide</button>
+    </div>
+
+    <div id="result"></div>
+    <div id="status"></div>
+</div>
+
+<script>
+function calculate(op) {
+    let n1 = parseFloat(document.getElementById("num1").value);
+    let n2 = parseFloat(document.getElementById("num2").value);
+
+    let resultBox = document.getElementById("result");
+    let statusBox = document.getElementById("status");
+
+    resultBox.innerText = "";
+    statusBox.innerText = "";
+    statusBox.classList.remove("error");
+
+    if (isNaN(n1) || isNaN(n2)) {
+        statusBox.innerText = "Enter valid numbers first!";
+        statusBox.classList.add("error");
+        return;
+    }
+
+    let res;
+
+    if (op === "add") res = n1 + n2;
+    else if (op === "sub") res = n1 - n2;
+    else if (op === "mul") res = n1 * n2;
+    else if (op === "div") {
+        if (n2 === 0) {
+            statusBox.innerText = "Division by zero not allowed!";
+            statusBox.classList.add("error");
+            return;
+        }
+        res = n1 / n2;
+    }
+
+    resultBox.innerText = "Result: " + res;
+
+    // Save result to file
+    try {
+        let data = "Result: " + res;
+        let blob = new Blob([data], { type: "text/plain" });
+
+        let link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "result.txt";
+        link.click();
+
+        statusBox.innerText = "Operation successful!";
+    } catch (e) {
+        statusBox.innerText = "Operation unsuccessful!";
+        statusBox.classList.add("error");
+    }
+}
+</script>
+
+</body>
+</html>
