@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gene Expression Analyzer</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+        }
+
+        input {
+            margin: 5px;
+            padding: 5px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .card {
+            border: 2px solid black;
+            border-radius: 10px;
+            margin: 10px auto;
+            padding: 10px;
+            width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Gene Expression Analyzer</h2>
+
+<!-- INPUT -->
+<input type="text" id="geneName" placeholder="Gene Name">
+<input type="number" id="expression" placeholder="Expression Value">
+
+<br>
+
+<!-- BUTTONS -->
+<button id="addBtn">Add Data</button>
+<button id="loadBtn">Load Sample Data</button>
+<button id="avgBtn">Calculate Average</button>
+
+<h3 id="avg"></h3>
+
+<div id="container"></div>
+
+<script>
+
+// DATA ARRAY
+let genes = [];
+
+// DISPLAY FUNCTION
+function displayData() {
+    let container = document.getElementById("container");
+    container.innerHTML = "";
+
+    genes.forEach((g, index) => {
+        let card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <h3>${g.name}</h3>
+            <p>Expression: ${g.value}</p>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+// ADD GENE
+function addGene() {
+    let name = document.getElementById("geneName").value;
+    let value = parseFloat(document.getElementById("expression").value);
+
+    if (!name || isNaN(value)) {
+        alert("Please enter valid data!");
+        return;
+    }
+
+    genes.push({ name: name, value: value });
+
+    displayData();
+
+    calculateAverage(); // ?? auto trigger
+
+    // clear input fields
+    document.getElementById("geneName").value = "";
+    document.getElementById("expression").value = "";
+}
+
+// LOAD SAMPLE DATA (ASYNC)
+async function loadSample() {
+
+    document.getElementById("avg").innerText = "Loading data...";
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    genes = [
+        { name: "BRCA1", value: 5.2 },
+        { name: "TP53", value: 3.8 },
+        { name: "EGFR", value: 6.1 }
+    ];
+
+    displayData();
+
+    document.getElementById("avg").innerText = "Sample Data Loaded";
+
+    calculateAverage(); // auto trigger
+}
+
+// CALCULATE AVERAGE
+function calculateAverage() {
+    if (genes.length === 0) {
+        document.getElementById("avg").innerText = "No data available";
+        return;
+    }
+
+    let sum = 0;
+
+    genes.forEach(g => sum += g.value);
+
+    let avg = sum / genes.length;
+
+    document.getElementById("avg").innerText =
+        "Average Expression: " + avg.toFixed(2);
+}
+
+// -----------------------------
+// ?? TRIGGERS (EVENT LISTENERS)
+// -----------------------------
+
+// Button triggers
+document.getElementById("addBtn").addEventListener("click", addGene);
+document.getElementById("loadBtn").addEventListener("click", loadSample);
+document.getElementById("avgBtn").addEventListener("click", calculateAverage);
+
+// ENTER key trigger
+document.getElementById("expression").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        addGene();
+    }
+});
+
+// Page load trigger
+window.onload = function() {
+    displayData();
+};
+
+</script>
+
+</body>
+</html>
