@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>GC Content Calculator</title>
+
+<style>
+body {
+  text-align: center;
+  font-family: Arial;
+}
+
+textarea {
+  width: 300px;
+  height: 100px;
+  margin: 10px;
+  padding: 5px;
+}
+
+button {
+  padding: 8px;
+  margin: 5px;
+}
+
+/* hover effect */
+button:hover {
+  background-color: lightgreen;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>GC Content Calculator</h2>
+
+<textarea id="seq" placeholder="Enter DNA sequence (A,T,G,C)"></textarea><br>
+
+<button onclick="calculateGC()">Calculate GC %</button>
+<button onclick="clearAll()">Clear</button>
+
+<h3>Result: <span id="result"></span></h3>
+
+<script>
+function calculateGC() {
+  let seq = document.getElementById("seq").value.toUpperCase();
+
+  let g = 0, c = 0;
+
+  for (let i = 0; i < seq.length; i++) {
+    if (seq[i] === 'G') g++;
+    else if (seq[i] === 'C') c++;
+  }
+
+  let total = seq.length;
+
+  if (total === 0) {
+    document.getElementById("result").innerText = "Enter sequence";
+    return;
+  }
+
+  let gcPercent = ((g + c) / total) * 100;
+
+  document.getElementById("result").innerText = gcPercent.toFixed(2) + "%";
+}
+
+function clearAll() {
+  document.getElementById("seq").value = "";
+  document.getElementById("result").innerText = "";
+}
+
+/* Enter key trigger */
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    calculateGC();
+  }
+});
+</script>
+
+</body>
+</html>
